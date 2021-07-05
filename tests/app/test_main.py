@@ -1,7 +1,8 @@
+from __future__ import annotations
+
 import os
 import re
 import sys
-from typing import Dict, List
 
 import pytest
 from fastapi import FastAPI
@@ -16,7 +17,7 @@ class TestCors:
     [Starlette CORS docs](https://www.starlette.io/middleware/#corsmiddleware).
     """
 
-    origins: Dict[str, List[str]] = {
+    origins: dict[str, list[str]] = {
         "allowed": [
             "http://br3ndon.land",
             "https://br3ndon.land",
@@ -37,10 +38,10 @@ class TestCors:
 
     @pytest.mark.parametrize("allowed_origin", origins["allowed"])
     def test_cors_preflight_response_allowed(
-        self, allowed_origin: str, clients: List[TestClient]
+        self, allowed_origin: str, clients: list[TestClient]
     ) -> None:
         """Test pre-flight response to cross-origin request from allowed origin."""
-        headers: Dict[str, str] = {
+        headers: dict[str, str] = {
             "Origin": allowed_origin,
             "Access-Control-Request-Method": "GET",
             "Access-Control-Request-Headers": "X-Example",
@@ -54,10 +55,10 @@ class TestCors:
 
     @pytest.mark.parametrize("disallowed_origin", origins["disallowed"])
     def test_cors_preflight_response_disallowed(
-        self, disallowed_origin: str, clients: List[TestClient]
+        self, disallowed_origin: str, clients: list[TestClient]
     ) -> None:
         """Test pre-flight response to cross-origin request from disallowed origin."""
-        headers: Dict[str, str] = {
+        headers: dict[str, str] = {
             "Origin": disallowed_origin,
             "Access-Control-Request-Method": "GET",
             "Access-Control-Request-Headers": "X-Example",
@@ -70,7 +71,7 @@ class TestCors:
 
     @pytest.mark.parametrize("allowed_origin", origins["allowed"])
     def test_cors_response_allowed(
-        self, allowed_origin: str, clients: List[TestClient]
+        self, allowed_origin: str, clients: list[TestClient]
     ) -> None:
         """Test response to cross-origin request from allowed origin."""
         headers = {"Origin": allowed_origin}
@@ -82,7 +83,7 @@ class TestCors:
 
     @pytest.mark.parametrize("disallowed_origin", origins["disallowed"])
     def test_cors_response_disallowed(
-        self, disallowed_origin: str, clients: List[TestClient]
+        self, disallowed_origin: str, clients: list[TestClient]
     ) -> None:
         """Test response to cross-origin request from disallowed origin.
         As explained in the Starlette test suite in tests/middleware/`test_cors.py`,
@@ -96,7 +97,7 @@ class TestCors:
             assert response.status_code == 200
             assert not response.headers.get("access-control-allow-origin")
 
-    def test_non_cors(self, clients: List[TestClient]) -> None:
+    def test_non_cors(self, clients: list[TestClient]) -> None:
         """Test non-CORS response."""
         for client in clients:
             response = client.get("/")
@@ -157,7 +158,7 @@ class TestEndpoints:
             client_asgi.get("/")
             assert str(e) == "Process manager needs to be either uvicorn or gunicorn."
 
-    def test_get_root(self, clients: List[TestClient]) -> None:
+    def test_get_root(self, clients: list[TestClient]) -> None:
         """Test a `GET` request to the root endpoint."""
         for client in clients:
             response = client.get("/")
@@ -166,7 +167,7 @@ class TestEndpoints:
 
     @pytest.mark.parametrize("endpoint", ["/health", "/status"])
     def test_gets_with_basic_auth(
-        self, basic_auth: tuple, clients: List[TestClient], endpoint: str
+        self, basic_auth: tuple, clients: list[TestClient], endpoint: str
     ) -> None:
         """Test `GET` requests to endpoints that require HTTP Basic auth."""
         for client in clients:
@@ -180,7 +181,7 @@ class TestEndpoints:
 
     @pytest.mark.parametrize("endpoint", ["/health", "/status"])
     def test_gets_with_basic_auth_incorrect(
-        self, basic_auth: tuple, clients: List[TestClient], endpoint: str
+        self, basic_auth: tuple, clients: list[TestClient], endpoint: str
     ) -> None:
         """Test `GET` requests with incorrect HTTP Basic auth credentials."""
         basic_auth_username, basic_auth_password = basic_auth
@@ -198,7 +199,7 @@ class TestEndpoints:
 
     @pytest.mark.parametrize("endpoint", ["/health", "/status"])
     def test_gets_with_fastapi_auth_incorrect_credentials(
-        self, clients: List[TestClient], endpoint: str, monkeypatch: pytest.MonkeyPatch
+        self, clients: list[TestClient], endpoint: str, monkeypatch: pytest.MonkeyPatch
     ) -> None:
         """Test FastAPI `GET` requests with incorrect HTTP Basic auth credentials."""
         monkeypatch.setenv("BASIC_AUTH_USERNAME", "test_user")
@@ -211,7 +212,7 @@ class TestEndpoints:
 
     @pytest.mark.parametrize("endpoint", ["/health", "/status"])
     def test_gets_with_fastapi_auth_no_credentials(
-        self, clients: List[TestClient], endpoint: str
+        self, clients: list[TestClient], endpoint: str
     ) -> None:
         """Test FastAPI `GET` requests without HTTP Basic auth credentials set."""
         fastapi_client = clients[0]
@@ -224,7 +225,7 @@ class TestEndpoints:
 
     @pytest.mark.parametrize("endpoint", ["/health", "/status"])
     def test_gets_with_starlette_auth_incorrect_credentials(
-        self, clients: List[TestClient], endpoint: str, monkeypatch: pytest.MonkeyPatch
+        self, clients: list[TestClient], endpoint: str, monkeypatch: pytest.MonkeyPatch
     ) -> None:
         """Test Starlette `GET` requests with incorrect HTTP Basic auth credentials."""
         monkeypatch.setenv("BASIC_AUTH_USERNAME", "test_user")
@@ -240,7 +241,7 @@ class TestEndpoints:
 
     @pytest.mark.parametrize("endpoint", ["/health", "/status"])
     def test_gets_with_starlette_auth_no_credentials(
-        self, clients: List[TestClient], endpoint: str
+        self, clients: list[TestClient], endpoint: str
     ) -> None:
         """Test Starlette `GET` requests without HTTP Basic auth credentials set."""
         starlette_client = clients[1]
@@ -255,7 +256,7 @@ class TestEndpoints:
     def test_get_status_message(
         self,
         basic_auth: tuple,
-        clients: List[TestClient],
+        clients: list[TestClient],
         endpoint: str = "/status",
     ) -> None:
         """Test the message returned by a `GET` request to a status endpoint."""
@@ -277,7 +278,7 @@ class TestEndpoints:
     def test_get_user(
         self,
         basic_auth: tuple,
-        clients: List[TestClient],
+        clients: list[TestClient],
         endpoint: str = "/users/me",
     ) -> None:
         """Test a `GET` request to an endpoint providing user information."""

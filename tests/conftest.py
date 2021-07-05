@@ -1,7 +1,8 @@
+from __future__ import annotations
+
 import os
 import shutil
 from pathlib import Path
-from typing import List
 
 import pytest
 from fastapi.testclient import TestClient
@@ -45,7 +46,7 @@ def client_asgi() -> TestClient:
 
 
 @pytest.fixture(scope="session")
-def clients() -> List[TestClient]:
+def clients() -> list[TestClient]:
     """Instantiate test client classes."""
     return [TestClient(fastapi_app), TestClient(starlette_app)]
 

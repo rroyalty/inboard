@@ -1,10 +1,11 @@
+from __future__ import annotations
+
 import importlib.util
 import logging
 import logging.config
 import os
 import sys
 from pathlib import Path
-from typing import Optional
 
 
 def find_and_load_logging_conf(logging_conf: str) -> dict:
@@ -30,7 +31,7 @@ def find_and_load_logging_conf(logging_conf: str) -> dict:
 
 def configure_logging(
     logger: logging.Logger = logging.getLogger(),
-    logging_conf: Optional[str] = os.getenv("LOGGING_CONF"),
+    logging_conf: str | None = os.getenv("LOGGING_CONF"),
 ) -> dict:
     """Configure Python logging given the name of a logging module or file."""
     try:

@@ -53,6 +53,10 @@ class Settings(BaseSettings):
     Settings are from [`pyproject.toml`](https://python-poetry.org/docs/pyproject/),
     and are tested by `test_metadata.py`.  The `__fields__` attribute provides a
     dictionary of pydantic model fields, without having to instantiate the model.
+
+    # TODO Python 3.10: str | None, list[str] | None
+    https://github.com/samuelcolvin/pydantic/issues/2597
+    https://github.com/samuelcolvin/pydantic/pull/2609
     """
 
     name: str
