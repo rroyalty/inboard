@@ -15,6 +15,7 @@ jobs:
       matrix:
         python-version: [3.8, 3.9, "3.10.0-beta - 3.10"]
     env:
+      POETRY_HOME: /opt/poetry
       POETRY_VIRTUALENVS_CREATE: false
     steps:
       - uses: actions/checkout@v2
@@ -37,10 +38,10 @@ jobs:
           restore-keys: ${{ runner.os }}-pre-commit-
       - name: Install Poetry
         run: |
-          curl -fsS -o get-poetry.py \
-            https://raw.githubusercontent.com/python-poetry/poetry/HEAD/get-poetry.py
-          python get-poetry.py -y
-          echo "$HOME/.poetry/bin" >> $GITHUB_PATH
+          curl -fsS -o install-poetry.py \
+            https://raw.githubusercontent.com/python-poetry/poetry/HEAD/install-poetry.py
+          python install-poetry.py -y
+          echo "$POETRY_HOME/bin" >> $GITHUB_PATH
       - name: Install dependencies
         run: poetry install --no-interaction -E fastapi
       - name: Run pre-commit hooks
